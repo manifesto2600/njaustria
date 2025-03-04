@@ -1,299 +1,158 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Information Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            flex-direction: column;
-        }
+<style>
+    body {
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        display: flex;
+    }
+    .form-container {
+        flex: 3;
+    }
+    .checklist {
+        flex: 1;
+        padding-left: 20px;
+        border-left: 2px solid white;
+    }
+    select, input {
+        background-color: black;
+        color: white;
+        border: 1px solid white;
+        padding: 5px;
+    }
+</style>
 
-        form {
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+<div class="form-container">
+    <h2>Customer Info</h2>
+    <label for="customer-name">Customer Name:</label>
+    <input type="text" id="customer-name" placeholder="Enter Customer Name"><br>
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+    <label for="owner">Are you the owner?</label>
+    <select id="owner" onchange="toggleOwnerQuestions()">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+    </select>
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+    <div id="decision-section" style="display: none;">
+        <label for="decision">Can you make financial and marketing decisions?</label>
+        <select id="decision">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+    </div>
 
-        button {
-            padding: 10px 20px;
-            border: none;
-            background: #4CAF50;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+    <h2>Discovery Questions</h2>
+    <label for="website">Do you have a website?</label>
+    <select id="website">
+        <option value="">Select an option</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+    </select><br>
 
-        button:hover {
-            background-color: #45a049;
-        }
+    <label for="work-type">Do you do residential or commercial work?</label>
+    <select id="work-type">
+        <option value="">Select an option</option>
+        <option value="Residential">Residential</option>
+        <option value="Commercial">Commercial</option>
+        <option value="Both">Both</option>
+    </select><br>
 
-        h1, h2, h3 {
-            margin-bottom: 20px;
-        }
+    <label for="years-business">How many years have you been in business?</label>
+    <input type="number" id="years-business" min="0"><br>
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    <label for="business-days">What are your business days?</label>
+    <select id="business-days">
+        <option value="">Select an option</option>
+        <option value="Weekdays">Weekdays</option>
+        <option value="7 Days a Week">7 Days a Week</option>
+    </select><br>
 
-        .flex-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+    <h2>Tie Down Question</h2>
+    <label for="accommodate">Can Accommodate More Customers?</label>
+    <select id="accommodate" onchange="toggleCanAccommodateMoreCustomers()">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+    </select>
 
-        .flex-item {
-            flex: 1;
-            min-width: 250px;
-        }
-    </style>
-</head>
-<body>
+    <div id="time-unit-section" style="display: none;">
+        <label for="time-unit">Can Accommodate Customers (Days/Weeks/Months):</label>
+        <select id="time-unit" onchange="toggleTimeUnitFields()">
+            <option value="">Select an option</option>
+            <option value="Days">Days</option>
+            <option value="Weeks">Weeks</option>
+            <option value="Months">Months</option>
+        </select>
 
-    <h1>Customer Information Form</h1>
-
-    <form id="customer-form" onsubmit="validateForm(event)">
-        <!-- Customer Name (Required) -->
-        <div class="form-group">
-            <label for="customer-name">Customer Name:</label>
-            <input type="text" id="customer-name" required>
+        <div id="days-section" style="display: none;">
+            <label for="days-value">Number of Days:</label>
+            <input type="number" id="days-value" min="1" max="60">
         </div>
 
-        <!-- Owner Selection (Required) -->
-        <div class="form-group">
-            <label for="owner">Owner? (Y/N):</label>
-            <select id="owner" onchange="toggleOwnerQuestions()" required>
-                <option value="Y" selected>Yes</option>
-                <option value="N">No</option>
-            </select>
+        <div id="weeks-section" style="display: none;">
+            <label for="weeks-value">Number of Weeks:</label>
+            <input type="number" id="weeks-value" min="1" max="8">
         </div>
 
-        <!-- Financial & Marketing decision question -->
-        <div id="financial-marketing-section" class="form-group" style="display: none;">
-            <label for="financial-marketing">Can make financial or marketing?:</label>
-            <select id="financial-marketing">
-                <option value="Y">Yes</option>
-                <option value="N">No</option>
-            </select>
+        <div id="months-section" style="display: none;">
+            <label for="months-value">Number of Months:</label>
+            <input type="number" id="months-value" min="1" max="2">
         </div>
+    </div>
 
-        <!-- Discovery Questions Heading -->
-        <h2>Discovery Questions</h2>
+    <h2>OMC</h2>
+    <label for="omc-name">Enter Closer Name:</label>
+    <input type="text" id="omc-name" placeholder="Enter OMC Name"><br>
 
-        <!-- Website Question (Required, Default: Yes) -->
-        <div class="form-group">
-            <label for="website">Website (Y/N):</label>
-            <select id="website" onchange="toggleProceedQuestion()" required>
-                <option value="Y" selected>Yes</option>
-                <option value="N">No</option>
-            </select>
-        </div>
+    <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    <button onclick="resetForm()">Reset</button>
+</div>
 
-        <!-- Proceed Question (Default: Yes) -->
-        <div id="proceed-question-section" class="form-group" style="display: block;">
-            <label for="proceed">Do you want to proceed? (Y/N):</label>
-            <select id="proceed" onchange="toggleProceedAnswer()">
-                <option value="Y" selected>Yes</option>
-                <option value="N">No</option>
-            </select>
-        </div>
+<div class="checklist">
+    <h3>Checklist</h3>
+    <label><input type="checkbox" class="checklist-item"> RFTC</label><br>
+    <label><input type="checkbox" class="checklist-item"> Owner Verified</label><br>
+    <label><input type="checkbox" class="checklist-item"> Co-Owner Verified</label><br>
+    <label><input type="checkbox" class="checklist-item"> Tie Down</label><br>
+    <label><input type="checkbox" class="checklist-item"> Handshake</label><br>
+    <button onclick="resetChecklist()">Reset Checklist</button>
+</div>
 
-        <!-- Discovery Questions (Only show if proceed is Yes) -->
-        <div id="discovery-questions" class="form-group" style="display: block;">
-            <div class="flex-container">
-                <div class="flex-item">
-                    <label for="years-of-service">Years of Service:</label>
-                    <input type="text" id="years-of-service" placeholder="Enter years">
-                </div>
-                <div class="flex-item">
-                    <label for="residential-commercial">Residential/Commercial:</label>
-                    <select id="residential-commercial">
-                        <option value="">-- Select --</option>
-                        <option value="Residential">Residential</option>
-                        <option value="Commercial">Commercial</option>
-                        <option value="Both">Both</option>
-                    </select>
-                </div>
-            </div>
+<script>
+    function toggleOwnerQuestions() {
+        const ownerValue = document.getElementById('owner').value;
+        document.getElementById('decision-section').style.display = (ownerValue === 'No') ? 'block' : 'none';
+    }
+    
+    function toggleCanAccommodateMoreCustomers() {
+        const accommodateStatus = document.getElementById('accommodate').value;
+        document.getElementById('time-unit-section').style.display = (accommodateStatus === 'No') ? 'block' : 'none';
+    }
+    
+    function toggleTimeUnitFields() {
+        const timeUnit = document.getElementById('time-unit').value;
+        document.getElementById('days-section').style.display = (timeUnit === 'Days') ? 'block' : 'none';
+        document.getElementById('weeks-section').style.display = (timeUnit === 'Weeks') ? 'block' : 'none';
+        document.getElementById('months-section').style.display = (timeUnit === 'Months') ? 'block' : 'none';
+    }
 
-            <div class="flex-container">
-                <div class="flex-item">
-                    <label for="weekends">Does Weekends?:</label>
-                    <select id="weekends">
-                        <option value="">-- Select --</option>
-                        <option value="Y">Yes</option>
-                        <option value="N">No</option>
-                    </select>
-                </div>
-
-                <div class="flex-item">
-                    <label for="weekdays">Does Weekdays?:</label>
-                    <select id="weekdays">
-                        <option value="">-- Select --</option>
-                        <option value="Y">Yes</option>
-                        <option value="N">No</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tie Down Question Heading -->
-        <h2>Tie Down Question</h2>
-
-        <!-- Can Accommodate More Customers? (Required, Default: Yes) -->
-        <div class="form-group">
-            <label for="accommodate">Can Accommodate More Customers? (Y/N):</label>
-            <select id="accommodate" onchange="toggleCanAccommodateMoreCustomers()" required>
-                <option value="Y" selected>Yes</option>
-                <option value="N">No</option>
-            </select>
-        </div>
-
-        <!-- OMC Question (New) -->
-        <div class="form-group">
-            <h3>OMC</h3>
-            <label for="omc-name">Enter OMC Name:</label>
-            <input type="text" id="omc-name" placeholder="Enter OMC Name">
-        </div>
-
-        <!-- Can Accommodate Customers (Days/Months) -->
-        <div id="time-unit-section" class="form-group" style="display: none;">
-            <label for="time-unit">Can Accommodate Customers (Days/Months):</label>
-            <select id="time-unit" onchange="toggleTimeUnitFields()">
-                <option value="Days">Days</option>
-                <option value="Months">Months</option>
-            </select>
-
-            <!-- Days section -->
-            <div id="days-section" style="display: block;">
-                <label for="days-value">Number of Days:</label>
-                <input type="number" id="days-value" min="1" max="60">
-            </div>
-
-            <!-- Months section -->
-            <div id="months-section" style="display: none;">
-                <label for="months-value">Number of Months:</label>
-                <input type="number" id="months-value" min="1" max="2">
-            </div>
-        </div>
-
-        <button type="button" onclick="copyToClipboard()">Copy</button>
-        <button type="button" onclick="resetForm()">Reset Form</button>
-    </form>
-
-    <script>
-        // Function to handle copy to clipboard
-        function copyToClipboard() {
-            const timeUnit = document.getElementById('time-unit').value;
-            let timeValue = "";
-            let yearsOfService = document.getElementById('years-of-service').value || 'Not Provided';
-
-            if (timeUnit === 'Days') {
-                timeValue = document.getElementById('days-value').value;
-            } else if (timeUnit === 'Months') {
-                timeValue = document.getElementById('months-value').value;
+    function copyToClipboard() {
+        let formData = '';
+        document.querySelectorAll('input, select').forEach(element => {
+            if (element.value) {
+                formData += `${element.previousElementSibling?.textContent || element.id}: ${element.value}\n`;
             }
+        });
+        navigator.clipboard.writeText(formData.trim()).then(() => alert('Copied to clipboard!'));
+    }
 
-            const isDecisionMaker = document.getElementById('financial-marketing').value === 'Y';
-            const coOwnerStatus = isDecisionMaker ? 'Yes' : 'No'; // Always export "Yes" for Financial Decision Maker
-
-            const formData = `
-                CUSTOMER NAME: ${document.getElementById('customer-name').value}
-                OWNER?: ${document.getElementById('owner').value}
-                CAN MAKE FINANCIAL OR MARKETING?: ${isDecisionMaker ? 'Yes' : document.getElementById('financial-marketing').value}
-                WEBSITE (Y/N): ${document.getElementById('website').value}
-                YEARS OF SERVICE: ${yearsOfService}
-                RESIDENTIAL/COMMERCIAL: ${document.getElementById('residential-commercial').value || 'Not Provided'}
-                DOES WEEKENDS?: ${document.getElementById('weekends').value || 'Not Provided'}
-                DOES WEEKDAYS?: ${document.getElementById('weekdays').value || 'Not Provided'}
-                CAN ACCOMMODATE MORE CUSTOMERS?: ${document.getElementById('accommodate').value}
-                CAN ACCOMMODATE CUSTOMERS (Days/Months): ${document.getElementById('time-unit').value}
-                Number of ${document.getElementById('time-unit').value}: ${timeValue}
-                OMC Name: ${document.getElementById('omc-name').value || 'Not Provided'}
-            `;
-            
-            const textArea = document.createElement('textarea');
-            textArea.value = formData;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            alert("Form data copied to clipboard!");
-        }
-
-        // Toggle owner questions
-        function toggleOwnerQuestions() {
-            const ownerStatus = document.getElementById('owner').value;
-            document.getElementById('financial-marketing-section').style.display = ownerStatus === 'Y' ? 'none' : 'block';
-        }
-
-        // Toggle proceed question visibility
-        function toggleProceedQuestion() {
-            document.getElementById('proceed-question-section').style.display = 'block';
-        }
-
-        function toggleProceedAnswer() {
-            const proceedAnswer = document.getElementById('proceed').value;
-            document.getElementById('discovery-questions').style.display = proceedAnswer === 'Y' ? 'block' : 'none';
-        }
-
-        function toggleCanAccommodateMoreCustomers() {
-            const accommodateStatus = document.getElementById('accommodate').value;
-            document.getElementById('time-unit-section').style.display = accommodateStatus === 'Y' ? 'none' : 'block';
-        }
-
-        function toggleTimeUnitFields() {
-            const timeUnit = document.getElementById('time-unit').value;
-            document.getElementById('days-section').style.display = timeUnit === 'Days' ? 'block' : 'none';
-            document.getElementById('months-section').style.display = timeUnit === 'Months' ? 'block' : 'none';
-        }
-
-        // Reset form
-        function resetForm() {
-            document.getElementById('customer-form').reset();
-            document.getElementById('financial-marketing-section').style.display = 'none';
-            document.getElementById('discovery-questions').style.display = 'none';
-            document.getElementById('time-unit-section').style.display = 'none';
-        }
-
-        // Validate form inputs before submitting
-        function validateForm(event) {
-            const customerName = document.getElementById('customer-name').value;
-
-            if (!customerName) {
-                alert("Customer name is required.");
-                event.preventDefault(); // Prevent form submission
-                return;
-            }
-        }
-    </script>
-</body>
-</html>
+    function resetForm() {
+        document.querySelectorAll('input, select').forEach(element => {
+            element.value = '';
+        });
+        document.getElementById('decision-section').style.display = 'none';
+        document.getElementById('time-unit-section').style.display = 'none';
+    }
+    
+    function resetChecklist() {
+        document.querySelectorAll('.checklist-item').forEach(item => item.checked = false);
+    }
+</script>
